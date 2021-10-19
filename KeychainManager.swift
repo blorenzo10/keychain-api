@@ -25,12 +25,14 @@ final class KeychainManager {
     ///
     /// - Parameter item: The item to be saved
     /// - Parameter itemClass: The item class
-    /// - Parameter attributes: The attributes that unique identifiy the ittem
-    func saveItem<T: Encodable>(_ item: T, itemClass: ItemClass, attributes: ItemAttributes? = nil) throws {
+    /// - Parameter key: Key to identifiy the item
+    /// - Parameter attributes: Optional dictionary with attributes to narrow the search
+    func saveItem<T: Encodable>(_ item: T, itemClass: ItemClass, key: String, attributes: ItemAttributes? = nil) throws {
         
         let itemData = try JSONEncoder().encode(item)
         var query: KeychainDictionary = [
             kSecClass as String: itemClass.rawValue,
+            kSecAttrAccount as String: key as AnyObject,
             kSecValueData as String: itemData as AnyObject
         ]
         
@@ -60,11 +62,13 @@ final class KeychainManager {
     /// ```
     ///
     /// - Parameter itemClass: The item class
-    /// - Parameter attributes: The attributes that unique identify the item
+    /// - Parameter key: Key to identifiy the item
+    /// - Parameter attributes: Optional dictionary with attributes to narrow the search
     /// - Returns: An instance of type `T`
-    func retrieveItem<T: Decodable>(ofClass itemClass: ItemClass, attributes: ItemAttributes? = nil) throws -> T {
+    func retrieveItem<T: Decodable>(ofClass itemClass: ItemClass, key: String, attributes: ItemAttributes? = nil) throws -> T {
         var query: KeychainDictionary = [
             kSecClass as String: itemClass.rawValue,
+            kSecAttrAccount as String: key as AnyObject,
             kSecReturnAttributes as String: true,
             kSecReturnData as String: true
         ]
@@ -103,10 +107,12 @@ final class KeychainManager {
     ///
     /// - Parameter item: Item to update
     /// - Parameter itemClass: The item class
-    /// - Parameter attributes: The attributes that unique identify the item
-    func updateItem<T: Encodable>(with item: T, ofClass itemClass: ItemClass, attributes: ItemAttributes? = nil) throws {
+    /// - Parameter key: Key to identifiy the item
+    /// - Parameter attributes: Optional dictionary with attributes to narrow the search
+    func updateItem<T: Encodable>(with item: T, ofClass itemClass: ItemClass, key: String, attributes: ItemAttributes? = nil) throws {
         var query: KeychainDictionary = [
-            kSecClass as String: itemClass.rawValue
+            kSecClass as String: itemClass.rawValue,
+            kSecAttrAccount as String: key as AnyObject,
         ]
         
         if let itemAttributes = attributes {
@@ -141,13 +147,17 @@ final class KeychainManager {
     /// ```
     ///
     /// - Parameter itemClass: The item class
-    /// - Parameter attributes: The attributes that unique identify the item
-    func deleteImte(ofClass itemClass: ItemClass, attributes: ItemAttributes) throws {
+    /// - Parameter key: Key to identifiy the item
+    /// - Parameter attributes: Optional dictionary with attributes to narrow the search
+    func deleteImte(ofClass itemClass: ItemClass, key: String, attributes: ItemAttributes? = nil) throws {
         var query: KeychainDictionary = [
-            kSecClass as String: itemClass.rawValue
+            kSecClass as String: itemClass.rawValue,
+            kSecAttrAccount as String: key as AnyObject
         ]
         
-        query.addAttributes(attributes)
+        if let itemAttributes = attributes {
+            query.addAttributes(itemAttributes)
+        }
         
         let result = SecItemDelete(query as CFDictionary)
         if result != errSecSuccess {
