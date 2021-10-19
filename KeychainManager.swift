@@ -7,6 +7,25 @@ final class KeychainManager {
     typealias KeychainDictionary = [String : Any]
     typealias ItemAttributes = [CFString : Any]
     
+    /// Save any Encodable data into the keychain
+    ///
+    /// ```
+    /// do {
+    ///    let apiTokenAttributes: KeychainManager.ItemAttributes = [
+    ///         kSecAttrLabel: "ApiToken"
+    ///    ]
+    ///    try KeychainManager.shared.saveItem(apiToken, itemClass: .generic, attributes: apiTokenAttributes)
+    ///    print("Api Token saved!")
+    /// } catch let keychainError as KeychainManager.KeychainError {
+    ///     print(keychainError.localizedDescription)
+    /// } catch {
+    ///     print(error)
+    /// }
+    /// ```
+    ///
+    /// - Parameter item: The item to be saved
+    /// - Parameter itemClass: The item class
+    /// - Parameter attributes: The attributes that unique identifiy the ittem
     func saveItem<T: Encodable>(_ item: T, itemClass: ItemClass, attributes: ItemAttributes? = nil) throws {
         
         let itemData = try JSONEncoder().encode(item)
@@ -25,6 +44,24 @@ final class KeychainManager {
         }
     }
     
+    /// Retrieve a decodable item from the keychain
+    ///
+    /// ```
+    /// do {
+    ///    let apiTokenAttributes: KeychainManager.ItemAttributes = [
+    ///         kSecAttrLabel: "ApiToken"
+    ///    ]
+    ///    let token: String = try KeychainManager.shared.retrieveItem(ofClass: .generic, attributes: apiTokenAttributes)
+    /// } catch let keychainError as KeychainManager.KeychainError {
+    ///     print(keychainError.localizedDescription)
+    /// } catch {
+    ///     print(error)
+    /// }
+    /// ```
+    ///
+    /// - Parameter itemClass: The item class
+    /// - Parameter attributes: The attributes that unique identify the item
+    /// - Returns: An instance of type `T`
     func retrieveItem<T: Decodable>(ofClass itemClass: ItemClass, attributes: ItemAttributes? = nil) throws -> T {
         var query: KeychainDictionary = [
             kSecClass as String: itemClass.rawValue,
@@ -49,6 +86,24 @@ final class KeychainManager {
         return try JSONDecoder().decode(T.self, from: data)
     }
     
+    /// Update an encodable item from the keychain
+    ///
+    /// ```
+    /// do {
+    ///    let apiTokenAttributes: KeychainManager.ItemAttributes = [
+    ///         kSecAttrLabel: "ApiToken"
+    ///    ]
+    ///    let token: String = try KeychainManager.shared.retrieveItem(ofClass: .generic, attributes: apiTokenAttributes)
+    /// } catch let keychainError as KeychainManager.KeychainError {
+    ///     print(keychainError.localizedDescription)
+    /// } catch {
+    ///     print(error)
+    /// }
+    /// ```
+    ///
+    /// - Parameter item: Item to update
+    /// - Parameter itemClass: The item class
+    /// - Parameter attributes: The attributes that unique identify the item
     func updateItem<T: Encodable>(with item: T, ofClass itemClass: ItemClass, attributes: ItemAttributes? = nil) throws {
         var query: KeychainDictionary = [
             kSecClass as String: itemClass.rawValue
@@ -70,6 +125,23 @@ final class KeychainManager {
         }
     }
     
+    /// Delete an item from the keychain
+    ///
+    /// ```
+    /// do {
+    ///    let apiTokenAttributes: KeychainManager.ItemAttributes = [
+    ///         kSecAttrLabel: "ApiToken"
+    ///    ]
+    ///    try KeychainManager.shared.deleteImte(ofClass: .generic, attributes: apiTokenAttributes)
+    /// } catch let keychainError as KeychainManager.KeychainError {
+    ///     print(keychainError.localizedDescription)
+    /// } catch {
+    ///     print(error)
+    /// }
+    /// ```
+    ///
+    /// - Parameter itemClass: The item class
+    /// - Parameter attributes: The attributes that unique identify the item
     func deleteImte(ofClass itemClass: ItemClass, attributes: ItemAttributes) throws {
         var query: KeychainDictionary = [
             kSecClass as String: itemClass.rawValue

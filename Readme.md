@@ -1,7 +1,3 @@
-## Description
-
-Swifty keychain wrapper.
-
 ## Usage
 
 Copy the KeychainManager.swift file into your project.
