@@ -149,7 +149,7 @@ final class KeychainManager {
     /// - Parameter itemClass: The item class
     /// - Parameter key: Key to identifiy the item
     /// - Parameter attributes: Optional dictionary with attributes to narrow the search
-    func deleteImte(ofClass itemClass: ItemClass, key: String, attributes: ItemAttributes? = nil) throws {
+    func deleteItem(ofClass itemClass: ItemClass, key: String, attributes: ItemAttributes? = nil) throws {
         var query: KeychainDictionary = [
             kSecClass as String: itemClass.rawValue,
             kSecAttrAccount as String: key as AnyObject
