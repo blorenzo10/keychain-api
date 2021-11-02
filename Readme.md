@@ -25,7 +25,7 @@ do {
     let apiTokenAttributes: KeychainManager.ItemAttributes = [
         kSecAttrLabel: "ApiToken"
     ]
-    try KeychainManager.shared.saveItem(apiToken, itemClass: .generic, attributes: apiTokenAttributes)
+    try KeychainManager.shared.saveItem(apiToken, itemClass: .generic, key: "ApiToken", attributes: apiTokenAttributes)
 } catch let keychainError as KeychainManager.KeychainError {
     print(keychainError.localizedDescription)
 } catch {
@@ -41,7 +41,7 @@ do {
         kSecAttrLabel: "ApiToken"
     ]
     
-    try KeychainManager.shared.updateItem(with: "new-token-value", ofClass: .generic, attributes: apiTokenAttributes)
+    try KeychainManager.shared.updateItem(with: "new-token-value", ofClass: .generic, key: "ApiToken", attributes: apiTokenAttributes)
     
 } catch let keychainError as KeychainManager.KeychainError {
     print(keychainError.localizedDescription)
@@ -58,7 +58,7 @@ do {
         kSecAttrLabel: "ApiToken"
     ]
     
-    try KeychainManager.shared.deleteImte(ofClass: .generic, attributes: apiTokenAttributes)
+    try KeychainManager.shared.deleteImte(ofClass: .generic, key: "ApiToken", attributes: apiTokenAttributes)
     
 } catch let keychainError as KeychainManager.KeychainError {
     print(keychainError.localizedDescription)
@@ -75,7 +75,7 @@ do {
         kSecAttrLabel: "ApiToken"
     ]
     
-    let token: String = try KeychainManager.shared.retrieveItem(ofClass: .generic, attributes: apiTokenAttributes)
+    let token: String = try KeychainManager.shared.retrieveItem(ofClass: .generic, key: "ApiToken", attributes: apiTokenAttributes)
     
 } catch let keychainError as KeychainManager.KeychainError {
     print(keychainError.localizedDescription)
